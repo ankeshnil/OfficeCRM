@@ -1,0 +1,187 @@
+﻿@model OfficeCRM.Models.ViewModel.Customer
+@using System.Data;
+@{
+    Layout = "_Layout";
+}
+<h3>Add New Customer</h3>
+<div class="box">
+    <div class="box-body">
+
+        <form name="frmCustomer" method="post" action="~/customer/Save" enctype="multipart/form-data">
+            <input type="hidden" name="CustomerId" value="@Model.CustomerID" />
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Customer Name <span style="color: Red">*</span></label>
+                        <input id="txtCustomerName" class="form-control" placeholder="Customer Name" type="text" name="CustomerName" value="@Model.CustomerName" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Phone No <span style="color: Red">*</span></label>
+                        <input class="form-control" placeholder="XXX-XXXXXXX" type="text" name="PhoneNo" value="@Model.PhoneNo" required />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Upload Id Proof <span style="color: Red">*</span></label>
+                        <input class="form-control" type="file" name="IdProof" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input class="form-control" placeholder="Address" type="text" name="Address" value="@Model.Address" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Country</label>
+                        <select name="CountryId" class="form-control">
+                            <option value="0">SELECT COUNTRY</option>
+                            @foreach (DataRow dr in Model.dtCountry.Rows)
+                            {
+                                if (Convert.ToInt32(@dr["CountryId"]) == Model.CountryId)
+                                {
+                                    <option value="@dr["CountryId"]" selected>@dr["CountryName"]</option>
+                                }
+                                else
+                                {
+                                    <option value="@dr["CountryId"]">@dr["CountryName"]</option>
+                                }
+                            }
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Email address <span style="color: Red">*</span></label>
+                        <input id="txtEmail" class="form-control" placeholder="Email" type="text" name="Email" value="@Model.Email" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Pin Code</label>
+                        <input class="form-control" placeholder="Pin Code" type="text" name="PinCode" value="@Model.pincode" />
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label> </label>
+                        <input type="submit" value="Save Customer" class="btn btn-success" onclick="return ValidateForm();" />
+                        <input type="reset" value="Reset" class="btn btn-danger" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<div class="box">
+    <div class="box-body">
+
+        <div>
+            <h3>Customer Details</h3>
+        </div>
+
+        <div class="col-xs-12">
+            <table id="example1" class="table table-bordered table-hover table-striped table-responsive">
+                <thead>
+                    <tr>
+                        <td> Customer Name</td>
+                        <td> Address</td>
+                        <td> ID Proof</td>
+                        <td> Country </td>
+                        <td> Phone No</td>
+                        <td> Email</td>
+                        <td> Pin Code</td>
+                        <td> Print Profile </td>
+                        <td>  </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.dtCustomer != null)
+                    {
+                        foreach (DataRow dr in Model.dtCustomer.Rows)
+                        {
+                            <tr>
+                                <td> @dr["CustomerName"].ToString()</td>
+                                <td> @dr["Address"].ToString()</td>
+                                <td>
+                                    @if (dr["IdProofPath"] != null && dr["IdProofPath"].ToString().Length > 0)
+                                    {
+                                        <a href="~/@dr["IdProofPath"].ToString()" target="_blank">View</a>
+                                    }
+                                </td>
+                                <td> @dr["CountryName"].ToString()</td>
+                                <td> @dr["PhoneNo"].ToString() No</td>
+                                <td> @dr["Email"].ToString()</td>
+                                <td> @dr["PinCode"].ToString()</td>
+                               
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <br /
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @if (Model.SuccessMessage != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                data_saved_success_message('1', '@Model.SuccessMessage');
+            };
+        </script>
+    }
+    @if (Model.FailureMessage != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                data_saved_success_message('0', '@Model.FailureMessage');
+            };
+        </script>
+    }
+
+}
+
+<script>
+
+    function ValidateForm()
+    {
+        //alert(document.getElementById('txtCustomerName').value);
+        if(document.getElementById('txtCustomerName').value == "")
+        {
+            alert("Please enter Customer Name!");
+            document.getElementById('txtCustomerName').focus();
+            return false;
+        }
+        if(document.getElementById('txtEmail').value == "")
+        {
+            alert("Please enter Customer Email!");
+            document.getElementById('txtEmail').focus();
+            return false;
+        }
+
+        return true;
+    }
+
+</script>
+
